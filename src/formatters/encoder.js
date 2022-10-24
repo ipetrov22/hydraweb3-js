@@ -2,6 +2,7 @@ const _ = require('lodash');
 const Web3Utils = require('web3-utils');
 const BigNumber = require('bignumber.js');
 const bs58 = require('bs58');
+const { Interface } = require('@ethersproject/abi')
 
 const Utils = require('../utils');
 const Constants = require('../constants');
@@ -322,6 +323,10 @@ class Encoder {
         throw Error('dynamics bytes conversion not implemented.');
       } else if (type === Constants.STRING) {
         throw Error('dynamic string conversion not implemented.');
+      } else if (type.match(Constants.REGEX_DYNAMIC_TUPLE_ARRAY)) {
+        const iface = new Interface(abi);
+        const hex = iface.encodeFunctionData(methodName, args).substring(2);
+        return hex;
       } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
         let data = '';
 

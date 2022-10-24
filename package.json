@@ -1,6 +1,6 @@
 {
-  "name": "hydraweb3-js",
-  "version": "0.0.4",
+  "name": "ipetrov22-hydraweb3-js",
+  "version": "0.0.5",
   "description": "HYDRA JavaScript API comunicating to HYDRA node over RPC",
   "main": "./src/index.js",
   "repository": {
@@ -16,6 +16,7 @@
     "npm": ">=6"
   },
   "dependencies": {
+    "@ethersproject/abi": "^5.7.0",
     "axios": "^0.18.0",
     "bignumber.js": "^7.2.1",
     "bn.js": "^4.11.8",
