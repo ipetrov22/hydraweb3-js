@@ -1,5 +1,5 @@
 {
-  "name": "hydraweb3-js",
+  "name": "ipetrov22-hydraweb3-js",
   "version": "0.0.5",
   "description": "HYDRA JavaScript API comunicating to HYDRA node over RPC",
   "main": "./src/index.js",

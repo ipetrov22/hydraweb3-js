@@ -302,6 +302,11 @@ class Encoder {
     const numOfParams = methodObj.inputs.length;
     const dataHexArr = _.times(numOfParams, _.constant(null));
 
+    if (methodObj.inputs.some((item) => item?.type?.match(Constants.REGEX_DYNAMIC_TUPLE_ARRAY))) {
+      const iface = new Interface(abi);
+      const hex = iface.encodeFunctionData(methodName, args).substring(2);
+      return hex;
+    }
     // Calculate start byte for dynamic data
     let dataLoc = 0;
     _.each(methodObj.inputs, (item) => {
@@ -323,10 +328,6 @@ class Encoder {
         throw Error('dynamics bytes conversion not implemented.');
       } else if (type === Constants.STRING) {
         throw Error('dynamic string conversion not implemented.');
-      } else if (type.match(Constants.REGEX_DYNAMIC_TUPLE_ARRAY)) {
-        const iface = new Interface(abi);
-        const hex = iface.encodeFunctionData(methodName, args).substring(2);
-        return hex;
       } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
         let data = '';
 
