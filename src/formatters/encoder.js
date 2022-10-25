@@ -2,7 +2,7 @@ const _ = require('lodash');
 const Web3Utils = require('web3-utils');
 const BigNumber = require('bignumber.js');
 const bs58 = require('bs58');
-const { Interface } = require('@ethersproject/abi')
+const { Interface } = require('@ethersproject/abi');
 
 const Utils = require('../utils');
 const Constants = require('../constants');
@@ -302,7 +302,7 @@ class Encoder {
     const numOfParams = methodObj.inputs.length;
     const dataHexArr = _.times(numOfParams, _.constant(null));
 
-    if (methodObj.inputs.some((item) => item.type.match(Constants.REGEX_DYNAMIC_TUPLE_ARRAY))) {
+    if (methodObj.inputs.some(item => item.type.match(Constants.REGEX_DYNAMIC_TUPLE_ARRAY))) {
       const iface = new Interface(abi);
       const hex = iface.encodeFunctionData(methodName, args).substring(2);
       return hex;

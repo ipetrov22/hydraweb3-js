@@ -1,9 +1,9 @@
 module.exports = {
   // Types
-  ADDRESS: "address",
-  BOOL: "bool",
-  BYTES: "bytes",
-  STRING: "string",
+  ADDRESS: 'address',
+  BOOL: 'bool',
+  BYTES: 'bytes',
+  STRING: 'string',
 
   // Regex
   REGEX_UINT: /^uint\d+/,

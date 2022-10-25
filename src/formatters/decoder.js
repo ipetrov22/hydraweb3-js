@@ -143,7 +143,7 @@ class Decoder {
   static mapToBN(el) {
     if (el.type === 'BigNumber') {
       return new BN(el.hex.substring(2), 16);
-    } else if(typeof el === 'number') {
+    } else if (typeof el === 'number') {
       return new BN(el);
     } else if (el instanceof Object) {
       Object.keys(el).forEach((key) => {
@@ -177,9 +177,9 @@ class Decoder {
     const methodABI = find(contractABI, { name: methodName });
     if (methodABI && 'executionResult' in output && 'output' in output.executionResult) {
       const iface = new Interface(contractABI);
-      let formattedOutput = JSON.parse(
-        JSON.stringify(iface.decodeFunctionResult(methodName, Utils.appendHexPrefix(output.executionResult.output)))
-      );
+      let formattedOutput = JSON.parse(JSON.stringify(
+        iface.decodeFunctionResult(methodName, Utils.appendHexPrefix(output.executionResult.output))
+      ));
       formattedOutput = this.mapToBN(formattedOutput);
 
       if (removeHexPrefix) {
