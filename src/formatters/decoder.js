@@ -147,7 +147,7 @@ class Decoder {
       return new BN(el);
     } else if (el instanceof Object) {
       Object.keys(el).forEach((key) => {
-        el[key] = this.mapToBN(el[key]);
+        el[key] = this.mapToBN(el[key]); // eslint-disable-line no-param-reassign
       });
     }
 
@@ -177,9 +177,8 @@ class Decoder {
     const methodABI = find(contractABI, { name: methodName });
     if (methodABI && 'executionResult' in output && 'output' in output.executionResult) {
       const iface = new Interface(contractABI);
-      let formattedOutput = JSON.parse(JSON.stringify(
-        iface.decodeFunctionResult(methodName, Utils.appendHexPrefix(output.executionResult.output))
-      ));
+      // eslint-disable-next-line max-len
+      let formattedOutput = JSON.parse(JSON.stringify(iface.decodeFunctionResult(methodName, Utils.appendHexPrefix(output.executionResult.output))));
       formattedOutput = this.mapToBN(formattedOutput);
 
       if (removeHexPrefix) {
