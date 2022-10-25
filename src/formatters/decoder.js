@@ -3,6 +3,8 @@ const Web3Utils = require('web3-utils');
 const EthjsAbi = require('ethjs-abi');
 const crypto = require('crypto');
 const bs58 = require('bs58');
+const BN = require('bn.js');
+const { Interface } = require('@ethersproject/abi');
 
 const Encoder = require('./encoder');
 const Utils = require('../utils');
@@ -111,7 +113,8 @@ class Decoder {
             let decodedLog;
             try {
               decodedLog = EthjsAbi.decodeLogItem(methodAbi, item);
-            } catch (err) { // catch throws in decodeLogItem
+            } catch (err) {
+              // catch throws in decodeLogItem
               console.warn(err.message);
               return;
             }
@@ -132,6 +135,23 @@ class Decoder {
 
       return formatted;
     });
+  }
+
+  /**
+   * Maps BigNumbers to use BN.js
+   */
+  static mapToBN(el) {
+    if (el.type === 'BigNumber') {
+      return new BN(el.hex.substring(2), 16);
+    } else if(typeof el === 'number') {
+      return new BN(el);
+    } else if (el instanceof Object) {
+      Object.keys(el).forEach((key) => {
+        el[key] = this.mapToBN(el[key]);
+      });
+    }
+
+    return el;
   }
 
   /**
@@ -156,10 +176,11 @@ class Decoder {
     const output = rawOutput;
     const methodABI = find(contractABI, { name: methodName });
     if (methodABI && 'executionResult' in output && 'output' in output.executionResult) {
-      const formattedOutput = EthjsAbi.decodeMethod(
-        methodABI,
-        Utils.appendHexPrefix(output.executionResult.output),
+      const iface = new Interface(contractABI);
+      let formattedOutput = JSON.parse(
+        JSON.stringify(iface.decodeFunctionResult(methodName, Utils.appendHexPrefix(output.executionResult.output)))
       );
+      formattedOutput = this.mapToBN(formattedOutput);
 
       if (removeHexPrefix) {
         each(Object.keys(formattedOutput), (key) => {
