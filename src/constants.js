@@ -1,9 +1,9 @@
 module.exports = {
   // Types
-  ADDRESS: 'address',
-  BOOL: 'bool',
-  BYTES: 'bytes',
-  STRING: 'string',
+  ADDRESS: "address",
+  BOOL: "bool",
+  BYTES: "bytes",
+  STRING: "string",
 
   // Regex
   REGEX_UINT: /^uint\d+/,
@@ -16,7 +16,7 @@ module.exports = {
   REGEX_STATIC_BYTES_ARRAY: /bytes([1-9]|[12]\d|3[0-2])(\[[0-9]+\])$/,
   REGEX_DYNAMIC_ARRAY: /\w+\[\]/,
   REGEX_DYNAMIC_TUPLE_ARRAY: /tuple\[\]/,
-
+  REGEX_DYNAMIC_BYTES_ARRAY: /bytes\[\]/,
   // Misc
   MAX_HEX_CHARS_PER_BYTE: 64,
 };
