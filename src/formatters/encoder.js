@@ -309,7 +309,9 @@ class Encoder {
     if (
       methodObj.inputs.some(
         (item) =>
-          item.type.match(Constants.REGEX_DYNAMIC_TUPLE_ARRAY) || item.type.match(Constants.REGEX_DYNAMIC_BYTES_ARRAY)
+          item.type.match(Constants.REGEX_DYNAMIC_TUPLE_ARRAY) ||
+          item.type.match(Constants.REGEX_DYNAMIC_BYTES_ARRAY) ||
+          item.type === Constants.TUPLE
       )
     ) {
       const iface = new Interface(abi);
