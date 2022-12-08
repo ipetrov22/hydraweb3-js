@@ -299,15 +299,16 @@ class Encoder {
       throw Error("Could not find method in ABI.");
     }
 
+    const argsCopy = args.slice();
     _.each(methodObj.inputs, (item, index) => {
       const { type } = item;
-      if (type === Constants.ADDRESS && args[index]) {
-        args[index] = this.addressToHex(args[index]);
+      if (type === Constants.ADDRESS && argsCopy[index]) {
+        argsCopy[index] = this.addressToHex(argsCopy[index]);
       }
     });
 
     const iface = new Interface(abi);
-    const hex = iface.encodeFunctionData(methodName, args).substring(2);
+    const hex = iface.encodeFunctionData(methodName, argsCopy).substring(2);
     return hex;
   }
 }
