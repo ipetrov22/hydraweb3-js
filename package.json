@@ -1,6 +1,6 @@
 {
   "name": "ipetrov22-hydraweb3-js",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "HYDRA JavaScript API comunicating to HYDRA node over RPC",
   "main": "./src/index.js",
   "repository": {
