@@ -299,87 +299,9 @@ class Encoder {
       throw Error("Could not find method in ABI.");
     }
 
-    // Get function hash
-    const funcHash = this.objToHash(methodObj, true);
-
-    // Create an array of data hex strings which will be combined at the end
-    const numOfParams = methodObj.inputs.length;
-    const dataHexArr = _.times(numOfParams, _.constant(null));
-
-    if (
-      methodObj.inputs.some(
-        (item) =>
-          item.type.match(Constants.REGEX_DYNAMIC_TUPLE_ARRAY) ||
-          item.type.match(Constants.REGEX_DYNAMIC_BYTES_ARRAY) ||
-          item.type === Constants.TUPLE
-      )
-    ) {
-      const iface = new Interface(abi);
-      const hex = iface.encodeFunctionData(methodName, args).substring(2);
-      return hex;
-    }
-    // Calculate start byte for dynamic data
-    let dataLoc = 0;
-    _.each(methodObj.inputs, (item) => {
-      const { type } = item;
-      if (type.match(Constants.REGEX_STATIC_ARRAY)) {
-        // treat each static array as an individual slot for dynamic data location purposes
-        const arrCap = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
-        dataLoc += arrCap;
-      } else {
-        dataLoc += 1;
-      }
-    });
-
-    _.each(methodObj.inputs, (item, index) => {
-      const { type } = item;
-      let hex;
-
-      if (type === Constants.BYTES) {
-        throw Error("dynamics bytes conversion not implemented.");
-      } else if (type === Constants.STRING) {
-        throw Error("dynamic string conversion not implemented.");
-      } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) {
-        // dynamic types
-        let data = "";
-
-        // set location of dynamic data
-        const startBytesLoc = dataLoc * 32;
-        hex = this.uintToHex(startBytesLoc);
-        dataHexArr[index] = hex;
-
-        // construct data
-        // add length of dynamic data set
-        const numOfDynItems = args[index].length;
-        data += this.uintToHex(numOfDynItems);
-
-        // add each hex converted item
-        _.each(args[index], (dynItem) => {
-          data += this.encodeParam(type, dynItem);
-        });
-
-        // add the dynamic data to the end
-        dataHexArr.push(data);
-
-        // increment starting data location
-        // +1 for the length of data set
-        dataLoc += numOfDynItems + 1;
-      } else if (
-        type === Constants.ADDRESS ||
-        type === Constants.BOOL ||
-        type.match(Constants.REGEX_UINT) ||
-        type.match(Constants.REGEX_INT) ||
-        type.match(Constants.REGEX_BYTES) ||
-        type.match(Constants.REGEX_STATIC_ARRAY)
-      ) {
-        // static types
-        dataHexArr[index] = this.encodeParam(type, args[index]);
-      } else {
-        console.error(`Found unknown type: ${type}`);
-      }
-    });
-
-    return funcHash + dataHexArr.join("");
+    const iface = new Interface(abi);
+    const hex = iface.encodeFunctionData(methodName, args).substring(2);
+    return hex;
   }
 }
 
