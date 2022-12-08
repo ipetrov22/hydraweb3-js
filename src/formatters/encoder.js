@@ -62,7 +62,7 @@ class Encoder {
       hexAddr = hexAddr.slice(2, 42); // Removes first byte (version) & last 4 bytes (checksum)
     }
 
-    return Web3Utils.padLeft(hexAddr, Constants.MAX_HEX_CHARS_PER_BYTE);
+    return hexAddr;
   }
 
   /**
