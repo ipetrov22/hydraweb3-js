@@ -1,11 +1,11 @@
-const _ = require("lodash");
-const Web3Utils = require("web3-utils");
-const BigNumber = require("bignumber.js");
-const bs58 = require("bs58");
-const { Interface } = require("@ethersproject/abi");
+const _ = require('lodash');
+const Web3Utils = require('web3-utils');
+const BigNumber = require('bignumber.js');
+const bs58 = require('bs58');
+const { Interface } = require('@ethersproject/abi');
 
-const Utils = require("../utils");
-const Constants = require("../constants");
+const Utils = require('../utils');
+const Constants = require('../constants');
 
 class Encoder {
   /**
@@ -16,19 +16,19 @@ class Encoder {
    */
   static objToHash(obj, isFunction) {
     if (_.isUndefined(obj)) {
-      throw new Error("obj should not be undefined");
+      throw new Error('obj should not be undefined');
     }
     if (_.isUndefined(isFunction)) {
-      throw new Error("isFunction should not be undefined");
+      throw new Error('isFunction should not be undefined');
     }
 
     const { name } = obj;
-    let params = "";
+    let params = '';
     for (let i = 0; i < obj.inputs.length; i++) {
       params = params.concat(obj.inputs[i].type);
 
       if (i < obj.inputs.length - 1) {
-        params = params.concat(",");
+        params = params.concat(',');
       }
     }
     const hash = name.concat(`(${params})`);
@@ -47,7 +47,7 @@ class Encoder {
    */
   static addressToHex(address) {
     if (!address) {
-      throw new Error("address should not be undefined");
+      throw new Error('address should not be undefined');
     }
 
     // Remove '0x' from beginning of address
@@ -58,7 +58,7 @@ class Encoder {
       hexAddr = addr;
     } else {
       const bytes = bs58.decode(addr);
-      hexAddr = bytes.toString("hex");
+      hexAddr = bytes.toString('hex');
       hexAddr = hexAddr.slice(2, 42); // Removes first byte (version) & last 4 bytes (checksum)
     }
 
@@ -72,7 +72,7 @@ class Encoder {
    */
   static boolToHex(value) {
     if (_.isUndefined(value)) {
-      throw new Error("value should not be undefined");
+      throw new Error('value should not be undefined');
     }
 
     return this.uintToHex(value ? 1 : 0);
@@ -91,7 +91,7 @@ class Encoder {
    */
   static intToHex(num) {
     if (_.isUndefined(num)) {
-      throw new Error("num should not be undefined");
+      throw new Error('num should not be undefined');
     }
 
     return Web3Utils.toTwosComplement(num).slice(2);
@@ -110,7 +110,7 @@ class Encoder {
    */
   static uintToHex(num) {
     if (_.isUndefined(num)) {
-      throw new Error("num should not be undefined");
+      throw new Error('num should not be undefined');
     }
 
     let bigNum;
@@ -132,10 +132,10 @@ class Encoder {
    */
   static stringToHex(string, maxCharLen) {
     if (!_.isString(string)) {
-      throw new Error("string should be a String");
+      throw new Error('string should be a String');
     }
     if (!_.isNumber(maxCharLen)) {
-      throw new Error("maxCharLen should be a Number");
+      throw new Error('maxCharLen should be a Number');
     }
 
     let hexString = Web3Utils.utf8ToHex(string);
@@ -152,13 +152,13 @@ class Encoder {
    */
   static stringArrayToHex(strArray, numOfItems) {
     if (!Array.isArray(strArray)) {
-      throw new Error("strArray is not an Array");
+      throw new Error('strArray is not an Array');
     }
     if (!_.isNumber(numOfItems)) {
-      throw new Error("numOfItems is not a Number");
+      throw new Error('numOfItems is not a Number');
     }
     if (numOfItems <= 0) {
-      throw new Error("numOfItems should be greater than 0");
+      throw new Error('numOfItems should be greater than 0');
     }
 
     const array = new Array(10);
@@ -167,17 +167,17 @@ class Encoder {
       if (strArray[i] !== undefined) {
         hexString = Web3Utils.utf8ToHex(strArray[i].toString());
       } else {
-        hexString = Web3Utils.utf8ToHex("");
+        hexString = Web3Utils.utf8ToHex('');
       }
 
       // Remove the 0x hex prefix
       array[i] = Web3Utils.padRight(hexString, Constants.MAX_HEX_CHARS_PER_BYTE).slice(
         2,
-        Constants.MAX_HEX_CHARS_PER_BYTE + 2
+        Constants.MAX_HEX_CHARS_PER_BYTE + 2,
       );
     }
 
-    return array.join("");
+    return array.join('');
   }
 
   /**
@@ -187,10 +187,10 @@ class Encoder {
    */
   static padHexString(hexStr) {
     if (_.isUndefined(hexStr)) {
-      throw new Error("hexStr should not be undefined");
+      throw new Error('hexStr should not be undefined');
     }
     if (!Web3Utils.isHex(hexStr)) {
-      throw new TypeError("hexStr should be a hex string");
+      throw new TypeError('hexStr should be a hex string');
     }
 
     const trimmed = Utils.trimHexPrefix(hexStr);
@@ -204,7 +204,7 @@ class Encoder {
    * @return {string} The value converted to hex string.
    */
   static encodeParam(type, value) {
-    let hex = "";
+    let hex = '';
     if (type.match(Constants.ADDRESS)) {
       if (value instanceof Array) {
         _.each(value, (addr) => {
@@ -266,16 +266,16 @@ class Encoder {
   static validateMethodAndArgs(abi, methodName, args = []) {
     const methodObj = _.find(abi, { name: methodName });
     if (!abi) {
-      throw Error("abi should not be undefined.");
+      throw Error('abi should not be undefined.');
     }
     if (!methodName) {
-      throw Error("methodName should not be undefined.");
+      throw Error('methodName should not be undefined.');
     }
     if (!methodObj) {
       throw Error(`Method ${methodName} not defined in ABI.`);
     }
     if (methodObj.inputs.length !== args.length) {
-      throw Error("Number of arguments supplied does not match ABI method args.");
+      throw Error('Number of arguments supplied does not match ABI method args.');
     }
 
     return true;
@@ -290,13 +290,13 @@ class Encoder {
    */
   static constructData(abi, methodName, args = []) {
     if (!this.validateMethodAndArgs(abi, methodName, args)) {
-      throw Error("Invalid params to construct data.");
+      throw Error('Invalid params to construct data.');
     }
 
     // Get the method obj from JSON
     const methodObj = _.find(abi, { name: methodName });
     if (!methodObj) {
-      throw Error("Could not find method in ABI.");
+      throw Error('Could not find method in ABI.');
     }
 
     const argsCopy = args.slice();
