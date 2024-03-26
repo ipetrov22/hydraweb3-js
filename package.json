@@ -1,6 +1,6 @@
 {
   "name": "ipetrov22-hydraweb3-js",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "HYDRA JavaScript API comunicating to HYDRA node over RPC",
   "main": "./src/index.js",
   "repository": {
@@ -25,7 +25,7 @@
     "ethjs-abi": "^0.2.1",
     "lodash": "^4.17.10",
     "utf8": "^3.0.0",
-    "web3-utils": "^1.0.0-beta.36"
+    "web3-utils": "1.7.5"
   },
   "devDependencies": {
     "dotenv": "^6.0.0",
